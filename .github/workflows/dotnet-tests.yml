@@ -1,0 +1,32 @@
+name: Run API tests
+
+on:
+  push:
+    branches:
+      - main
+      - github-actions-integration
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore dependencies
+        run: dotnet restore ./Api.Tests/Api.Tests.csproj
+
+      - name: Build project
+        run: dotnet build ./Api.Tests/Api.Tests.csproj --no-restore
+
+      - name: Run tests
+        run: dotnet test ./Api.Tests/Api.Tests.csproj --no-build --verbosity normal
